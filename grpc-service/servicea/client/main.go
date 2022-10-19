@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	svcA "github.com/zhiruchen/go-common/grpc-service/servicea/pb"
+	svcA "github.com/forfd8960/gocode/grpc-service/servicea/pb"
 	"google.golang.org/grpc"
 )
 

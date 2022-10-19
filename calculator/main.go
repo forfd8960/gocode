@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/zhiruchen/go-common/calculator/eval"
+	"github.com/forfd8960/gocode/calculator/eval"
 )
 
 func main() {

@@ -9,7 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	chatPb "github.com/zhiruchen/go-common/grpc/pb"
+	chatPb "github.com/forfd8960/gocode/grpc/pb"
 )
 
 func main() {

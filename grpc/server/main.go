@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	chatPb "github.com/zhiruchen/go-common/grpc/pb"
+	chatPb "github.com/forfd8960/gocode/grpc/pb"
 )
 
 var (

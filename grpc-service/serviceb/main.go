@@ -9,8 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	svcB "github.com/zhiruchen/go-common/grpc-service/serviceb/pb"
 	"google.golang.org/grpc"
+
+	svcB "github.com/forfd8960/gocode/grpc-service/serviceb/pb"
 )
 
 type svcBImpl struct{}

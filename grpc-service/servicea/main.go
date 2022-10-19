@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	svcA "github.com/zhiruchen/go-common/grpc-service/servicea/pb"
-	svcB "github.com/zhiruchen/go-common/grpc-service/serviceb/pb"
+	svcA "github.com/forfd8960/gocode/grpc-service/servicea/pb"
+	svcB "github.com/forfd8960/gocode/grpc-service/serviceb/pb"
 	"google.golang.org/grpc"
 )
 
