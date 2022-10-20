@@ -57,7 +57,7 @@ func NewSkipList(maxLevel int, p float32) *SkipList {
 // Find find the skip node according key
 func (sl *SkipList) Find(key int) *Node {
 	currentNode := sl.Head
-	currentMaxLevel := nodeLevel(sl.Head)
+	currentMaxLevel := len(sl.Head.forward)
 
 	for level := currentMaxLevel; level > 0; level-- {
 		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
@@ -71,6 +71,48 @@ func (sl *SkipList) Find(key int) *Node {
 	}
 
 	return nil
+}
+
+// Insert insert key, value
+func (sl *SkipList) Insert(key int, value string) {
+	n := sl.Find(key)
+	if n != nil {
+		n.value = value
+		return
+	}
+
+	updateForward := make([]*Node, len(sl.Head.forward))
+	copy(updateForward, sl.Head.forward)
+
+	currentNode := sl.Head
+	currentMaxLevel := len(sl.Head.forward)
+	for level := currentMaxLevel; level > 0; level-- {
+		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
+			currentNode = currentNode.forward[level]
+		}
+		updateForward[level] = currentNode
+	}
+
+	currentNode = currentNode.forward[0]
+	newNodeLevel := 1
+
+	if currentNode.key != key {
+		newNodeLevel = sl.randomLevel()
+		currentLevel := nodeLevel(updateForward)
+
+		if newNodeLevel > currentLevel {
+			for i := currentLevel + 1; i < newNodeLevel; i++ {
+				updateForward[i] = sl.Head
+			}
+		}
+
+		currentNode = makeNode(key, value, newNodeLevel)
+	}
+
+	for i := 0; i < newNodeLevel; i++ {
+		currentNode.forward[i] = updateForward[i].forward[i]
+		updateForward[i].forward[i] = currentNode
+	}
 }
 
 func (sl *SkipList) randomLevel() int {
@@ -89,16 +131,14 @@ func randFloat() float32 {
 
 // nodeLevel returns the number of non-null pointers
 // corresponding to the level of the current node.
-func nodeLevel(n *Node) int {
+func nodeLevel(forward []*Node) int {
 	currentLevel := 1
-	nilKey := math.MaxInt
-
-	if n.key == nilKey {
+	if forward[0].key == tailKey {
 		return currentLevel
 	}
 
-	for _, forward := range n.forward {
-		if forward != nil && forward.key != nilKey {
+	for _, forward := range forward {
+		if forward != nil && forward.key != tailKey {
 			currentLevel++
 		} else {
 			break
