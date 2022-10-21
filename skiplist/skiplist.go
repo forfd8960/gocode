@@ -33,7 +33,6 @@ func makeNode(key int, value string, level int) *Node {
 
 type SkipList struct {
 	Head     *Node
-	Tail     *Node
 	MaxLevel int
 	P        float32
 }
@@ -45,10 +44,9 @@ func NewSkipList(maxLevel int, p float32) *SkipList {
 	}
 
 	sl.Head = makeNode(headKey, "HEAD", maxLevel)
-	sl.Tail = makeNode(tailKey, "NIL", maxLevel)
-
+	tail := makeNode(tailKey, "NIL", maxLevel)
 	for i := 0; i < maxLevel; i++ {
-		sl.Head.forward[i] = sl.Tail
+		sl.Head.forward[i] = tail
 	}
 
 	return sl
@@ -57,9 +55,9 @@ func NewSkipList(maxLevel int, p float32) *SkipList {
 // Find find the skip node according key
 func (sl *SkipList) Find(key int) *Node {
 	currentNode := sl.Head
-	currentMaxLevel := len(sl.Head.forward)
+	currentMaxLevel := nodeLevel(sl.Head.forward)
 
-	for level := currentMaxLevel; level > 0; level-- {
+	for level := currentMaxLevel; level >= 0; level-- {
 		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
 			currentNode = currentNode.forward[level]
 		}
@@ -86,7 +84,7 @@ func (sl *SkipList) Insert(key int, value string) {
 
 	currentNode := sl.Head
 	currentMaxLevel := len(sl.Head.forward) - 1
-	for level := currentMaxLevel; level > 0; level-- {
+	for level := currentMaxLevel; level >= 0; level-- {
 		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
 			currentNode = currentNode.forward[level]
 		}
@@ -155,7 +153,7 @@ func randFloat() float32 {
 // nodeLevel returns the number of non-null pointers
 // corresponding to the level of the current node.
 func nodeLevel(forward []*Node) int {
-	currentLevel := 1
+	currentLevel := 0
 	if forward[0].key == tailKey {
 		return currentLevel
 	}
