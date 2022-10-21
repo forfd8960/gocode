@@ -85,7 +85,7 @@ func (sl *SkipList) Insert(key int, value string) {
 	copy(updateForward, sl.Head.forward)
 
 	currentNode := sl.Head
-	currentMaxLevel := len(sl.Head.forward)
+	currentMaxLevel := len(sl.Head.forward) - 1
 	for level := currentMaxLevel; level > 0; level-- {
 		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
 			currentNode = currentNode.forward[level]
@@ -112,6 +112,29 @@ func (sl *SkipList) Insert(key int, value string) {
 	for i := 0; i < newNodeLevel; i++ {
 		currentNode.forward[i] = updateForward[i].forward[i]
 		updateForward[i].forward[i] = currentNode
+	}
+}
+
+func (sl *SkipList) Delete(key int) {
+	update := make([]*Node, len(sl.Head.forward))
+	currentLevel := len(sl.Head.forward) - 1
+	currentNode := sl.Head
+
+	for level := currentLevel; level > 0; level-- {
+		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
+			currentNode = currentNode.forward[level]
+		}
+
+		update[level] = currentNode
+	}
+
+	currentNode = currentNode.forward[0]
+	if currentNode == nil || currentNode.key != key {
+		return
+	}
+
+	for i := 0; i < len(currentNode.forward); i++ {
+		update[i].forward[i] = currentNode.forward[i]
 	}
 }
 
