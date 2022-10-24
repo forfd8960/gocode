@@ -233,28 +233,113 @@ func TestSkipList_Insert(t *testing.T) {
 
 func TestSkipList_Delete(t *testing.T) {
 	type fields struct {
-		Head     *Node
-		MaxLevel int
-		P        float32
+		sl *SkipList
 	}
 	type args struct {
-		key int
+		key    int
+		exists bool
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
 	}{
-		{},
+		{
+			name: "delete from empty list",
+			fields: fields{
+				sl: NewSkipList(10, 0.5),
+			},
+			args: args{
+				key:    1,
+				exists: false,
+			},
+		},
+		{
+			name: "delete - key not exists",
+			fields: fields{
+				sl: buildList1(),
+			},
+			args: args{
+				key:    1,
+				exists: false,
+			},
+		},
+		{
+			name: "delete - delete the element",
+			fields: fields{
+				sl: buildList1(),
+			},
+			args: args{
+				key:    6,
+				exists: true,
+			},
+		},
+		{
+			name: "delete - delete the element:0",
+			fields: fields{
+				sl: buildList1(),
+			},
+			args: args{
+				key:    0,
+				exists: true,
+			},
+		},
+		{
+			name: "delete - delete the element:6",
+			fields: fields{
+				sl: buildList1(),
+			},
+			args: args{
+				key:    6,
+				exists: true,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			sl := &SkipList{
-				Head:     tt.fields.Head,
-				MaxLevel: tt.fields.MaxLevel,
-				P:        tt.fields.P,
+			sl := tt.fields.sl
+
+			fmt.Printf("before delete: %s\n", sl)
+			exists := sl.Delete(tt.args.key)
+			fmt.Printf("before delete: %s\n", sl)
+
+			assert.Equal(t, tt.args.exists, exists)
+			if exists {
+				assert.Nil(t, sl.Find(tt.args.key))
 			}
-			sl.Delete(tt.args.key)
 		})
 	}
+}
+
+func buildList1() *SkipList {
+	sl := NewSkipList(10, 0.5)
+	node0 := &Node{
+		key:     0,
+		value:   "test",
+		forward: make([]*Node, 1),
+	}
+	node1 := &Node{
+		key:     6,
+		value:   "A",
+		forward: make([]*Node, 2),
+	}
+
+	node2 := &Node{
+		key:     8,
+		value:   "B",
+		forward: make([]*Node, 1),
+	}
+
+	node0.forward[0] = sl.Head.forward[0]
+	sl.Head.forward[0] = node0
+
+	node1.forward[0] = node0.forward[0]
+	node1.forward[1] = sl.Head.forward[1]
+	node0.forward[0] = node1
+	sl.Head.forward[1] = node1
+
+	node2.forward[0] = node1.forward[0]
+	node1.forward[0] = node2
+
+	return sl
 }
