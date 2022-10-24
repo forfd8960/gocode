@@ -1,8 +1,10 @@
 package skiplist
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -15,6 +17,10 @@ type Node struct {
 	key     int
 	value   string
 	forward []*Node
+}
+
+func (n *Node) String() string {
+	return fmt.Sprintf("%d:%s", n.key, n.value)
 }
 
 func makeNode(key int, value string, level int) *Node {
@@ -50,6 +56,22 @@ func NewSkipList(maxLevel int, p float32) *SkipList {
 	}
 
 	return sl
+}
+
+func (sl *SkipList) String() string {
+	currentNode := sl.Head
+	nodes := []*Node{}
+
+	for currentNode != nil {
+		nodes = append(nodes, currentNode)
+		currentNode = currentNode.forward[0]
+	}
+
+	kvs := []string{}
+	for _, node := range nodes {
+		kvs = append(kvs, node.String())
+	}
+	return strings.Join(kvs, "->")
 }
 
 // Find find the skip node according key
@@ -113,12 +135,12 @@ func (sl *SkipList) Insert(key int, value string) {
 	}
 }
 
-func (sl *SkipList) Delete(key int) {
+func (sl *SkipList) Delete(key int) bool {
 	update := make([]*Node, len(sl.Head.forward))
 	currentLevel := len(sl.Head.forward) - 1
 	currentNode := sl.Head
 
-	for level := currentLevel; level > 0; level-- {
+	for level := currentLevel; level >= 0; level-- {
 		for currentNode.forward[level] != nil && currentNode.forward[level].key < key {
 			currentNode = currentNode.forward[level]
 		}
@@ -128,12 +150,14 @@ func (sl *SkipList) Delete(key int) {
 
 	currentNode = currentNode.forward[0]
 	if currentNode == nil || currentNode.key != key {
-		return
+		return false
 	}
 
 	for i := 0; i < len(currentNode.forward); i++ {
 		update[i].forward[i] = currentNode.forward[i]
 	}
+
+	return true
 }
 
 func (sl *SkipList) randomLevel() int {
