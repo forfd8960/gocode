@@ -18,7 +18,6 @@ func ReceiveErrFromChan(num int, even bool) string {
 			if even && n%2 == 0 {
 				strChan <- "n is even"
 			}
-
 		}()
 	}
 	wg.Wait()
