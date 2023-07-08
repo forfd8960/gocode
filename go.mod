@@ -9,6 +9,7 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/google/btree v1.0.0
 	github.com/labstack/echo/v4 v4.2.1
+	github.com/nsqio/go-nsq v1.1.0
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/smartystreets/goconvey v1.7.2 // indirect
