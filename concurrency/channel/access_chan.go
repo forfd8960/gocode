@@ -48,15 +48,12 @@ func (d *data) waitForData() {
 
 func (d *data) SendData(val int) {
 	go func() {
-		d.mu.Lock()
-		defer d.mu.Unlock()
-		if len(d.dataCh) >= 1 {
+		select {
+		case d.dataCh <- val:
+			log.Printf("enqueue %d to channel\n", val)
+		default:
 			log.Printf("dataCh is full for: %d\n", val)
-			return
 		}
-
-		log.Printf("enqueue %d to channel", val)
-		d.dataCh <- val
 	}()
 }
 
