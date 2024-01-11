@@ -14,6 +14,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/stretchr/testify v1.5.1
+	github.com/thoas/go-funk v0.9.3 // indirect
 	google.golang.org/grpc v1.24.0
 	moul.io/http2curl v1.0.0 // indirect
 )
